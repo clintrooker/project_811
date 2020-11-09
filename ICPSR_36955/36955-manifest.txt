@@ -1,0 +1,115 @@
+File Manifest for ICPSR 36955
+
+Michigan Department of Health and Human Services. State of Michigan: Taking
+Action on Flint Water Test Results, 2015-2017. ICPSR36955-v1. Ann Arbor,
+MI: Inter-university Consortium for Political and Social Research
+[distributor], 2017-11-13. http://doi.org/10.3886/ICPSR36955.v1
+
+
+Study-level Documentation
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    36955-descriptioncitation.pdf       -       -         -       2017-11-13  -
+
+    36955-manifest.txt                  -       -         -       daily       -
+
+    36955-Zipped_package.zip            -       -         -       2017-11-13  3ebf37d1914a25c26a4e5b0626c5ac91
+
+
+DS0001 Establishment Testing Results
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    36955-0001-Codebook.pdf             -       -         -       2017-11-13  dac2b02b9dbedb90ec4ef9a77ace1c98
+
+    36955-0001-Data.dta                 -       2,908     9       2017-11-13  7219e92dbe32f8aee79f816d4a6be525
+
+    36955-0001-Data.rda                 -       2,908     9       2017-11-13  cfd48db27ffd6e38bc3dc18a149a6ce6
+
+    36955-0001-Data.sav                 -       2,908     9       2017-11-13  b46daa04a145e6be51f9c009eab268c6
+
+    36955-0001-Data.stc                 -       2,908     9       2017-11-13  48f737ed03b5747f0732e6c2d3d542c6
+
+    36955-0001-Data.tsv                 -       2,908     9       2017-11-13  29838608decba047418c5c9fa672893a
+
+    36955-0001-Data.txt                 120     2,908     9       2017-11-13  d37a81671ba9e10c586d16edff5188d0
+
+    36955-0001-Setup.dct                -       -         -       2017-11-13  c2fb79d36b1de377a846beb3cce81e8c
+
+    36955-0001-Setup.do                 -       -         -       2017-11-13  0b9c9fe9bc079ee86091914d87b2f1c0
+
+    36955-0001-Setup.sas                -       -         -       2017-11-13  b291dd47412d3011360541b6f47afbce
+
+    36955-0001-Setup.sps                -       -         -       2017-11-13  24fed092e35e21d6919483decc0b5e39
+
+    36955-0001-Supplemental_syntax.do   -       -         -       2017-11-13  bc1b044d01e9ea0b214c0e7cc9f45476
+
+    36955-0001-Supplemental_syntax.sas  -       -         -       2017-11-13  61eb00140624ac8464c17db2c6a22bcb
+
+
+DS0002 Sentinel Testing Results
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    36955-0002-Codebook.pdf             -       -         -       2017-11-13  569b3959ca54462dc00d7898a6506aba
+
+    36955-0002-Data.dta                 -       4,295     15      2017-11-13  4e137fdaebb0c9ed93f108383b62cf38
+
+    36955-0002-Data.rda                 -       4,295     15      2017-11-13  739495a10efb46bf2d0d7db4189a34b0
+
+    36955-0002-Data.sav                 -       4,295     15      2017-11-13  1d642df3ce59ac2ff5a8f80a50b857a5
+
+    36955-0002-Data.stc                 -       4,295     15      2017-11-13  57d182a9a3befd19d16f469895d3b835
+
+    36955-0002-Data.tsv                 -       4,295     15      2017-11-13  071e07094c595517a137ac6e5ba0ce2f
+
+    36955-0002-Data.txt                 169     4,295     15      2017-11-13  16dc52f9ce7300c9e69d4e6f0df29e99
+
+    36955-0002-Setup.dct                -       -         -       2017-11-13  9175b3f70ea23d89a66cc8cd8dc6561d
+
+    36955-0002-Setup.do                 -       -         -       2017-11-13  80449c40955f129ab2564d73e3bd8a1e
+
+    36955-0002-Setup.sas                -       -         -       2017-11-13  00fd6d8158e6bcf19f994bb35754434f
+
+    36955-0002-Setup.sps                -       -         -       2017-11-13  07ec068b28abd44bb66810f1a5f4dc34
+
+    36955-0002-Supplemental_syntax.do   -       -         -       2017-11-13  4b52735a1a918915718ce6d444c79ef2
+
+    36955-0002-Supplemental_syntax.sas  -       -         -       2017-11-13  4a50356f5aeea576b7685af44220af19
+
+
+DS0003 School Testing Results
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    36955-0003-Codebook.pdf             -       -         -       2017-11-13  72430aaa6d463353fbb22675639fed51
+
+    36955-0003-Data.dta                 -       8,403     14      2017-11-13  6342680db9fcfefb6a9c66114c5d7710
+
+    36955-0003-Data.rda                 -       8,403     14      2017-11-13  2d8a3203840d6f271f1b1c853f0f1055
+
+    36955-0003-Data.sav                 -       8,403     14      2017-11-13  78d262d5e49885015848860d637dcc75
+
+    36955-0003-Data.stc                 -       8,403     14      2017-11-13  c5213dfb1a85955934bae7c0beb3951c
+
+    36955-0003-Data.tsv                 -       8,403     14      2017-11-13  20fe6d3f93338d64eb771e0d6e5039a4
+
+    36955-0003-Data.txt                 346     8,403     14      2017-11-13  401b0d45c1ce4a9e87fba621fbf3f37f
+
+    36955-0003-Setup.dct                -       -         -       2017-11-13  a548f1dbd5a72c9596535f5fa850b891
+
+    36955-0003-Setup.do                 -       -         -       2017-11-13  064721f17e423b58b252ae7b4a80ebce
+
+    36955-0003-Setup.sas                -       -         -       2017-11-13  ae5ef047693e1fadac04fcd5994b9030
+
+    36955-0003-Setup.sps                -       -         -       2017-11-13  b10f52837a6d162e72a1f8ce542a0d88
+
+    36955-0003-Supplemental_syntax.do   -       -         -       2017-11-13  91b8046b0c682bcaa67acd80c3c25b5a
+
+    36955-0003-Supplemental_syntax.sas  -       -         -       2017-11-13  260038bf0071bc84787b47ba6d07b3fe
+
