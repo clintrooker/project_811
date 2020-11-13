@@ -1,0 +1,159 @@
+
+---
+title: 'Exercise 9: Analysis'
+author: "Clinton Rooker"
+date: "11/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Review
+
+1. Download the .Rmd version of this file from GitHub and change the author to your name.
+
+2. Load packages.
+
+```{r packages, include = FALSE}
+##Load Packages 
+library("here")
+library("haven")
+install.packages("stargazer")
+library(stargazer)
+install.packages('Rmisc')
+library("Rmisc")
+library("magrittr")
+library("tidyverse")
+library("ggplot2")
+library("broom")
+library("MASS")
+install.packages('estimatr')
+library("estimatr")
+install.packages('modelsummary')
+library("modelsummary")
+```
+
+3. Set up your files and folder structure.
+```{r}
+getwd()
+here::here("data") #have to specify which here package to use to avoid error by using ::
+
+
+```
+4. Read the ANES .dta data into R using the `here` package.
+```{r}
+#read and name data
+anes2016 <- read_dta(here::here("data", "anes_timeseries_2016.dta"))
+#view data
+view(anes2016)
+```
+5. Download the ANES 2016 codebook (available on the `ps811/data` repository). We will look at the full sample variables.
+
+
+6. You want to know whether owning a house (pre-election) affects which party the respondent choose to contribute to (post-election). Identify these variables from the codebook and rename the variables to names that are easier to reference.
+```{r}
+#Dependent Variable: Party of contribution (Post) <- V162016a
+#Independent Variable: Home Ownership (Pre) <- V161334
+
+#Rename owning home variable 
+anes2016$own_home_pre <- anes2016$V161334
+#Rename party contribution 
+anes2016$party_contribution_post <- anes2016$V162016a
+
+
+```
+7. Now identify pre-election demographic variables, such as age, gender, and race. Manipulate these variables in ways that you believe would best capture these demographics and explain why you manipulated these variables that way you did. Rename these variables to names that are easier to reference.
+
+```{r}
+#Rename gender
+anes2016$gender <- anes2016$V161342 
+#Rename race 
+anes2016$race <- anes2016$V161310x
+#Rename age 
+anes2016$age <- anes2016$V161267
+#Rename education 
+anes2016$education <- anes2016$V161270
+#Rename employment 
+anes2016$employment <- anes2016$V161277
+
+#Subset data to 1) exclude Non-response and 2) to remove coded response that are not relevant (i.e. "Other" living arrangement for home variable)
+anes2016 <- subset(anes2016, subset = gender > 0 & race > 0 & age > 0 & own_home_pre < 4 & party_contribution_post < 3 & education > 0 & employment > 0)
+
+#Restrict data to only those variables of interest
+anes2016 <- subset(anes2016, select = c("own_home_pre", "party_contribution_post", "gender", "race", "age", "education", "employment"))
+#view new anes2016
+view(anes2016)
+
+#recode ownership, if 1[renting], then 0, if not 1, then 1[owning home]
+anes2016 <- mutate(anes2016, 
+         homeowner = ifelse(own_home_pre == 1,
+                          0,
+                          1))
+
+#recode contribution, if 1[Dem], then 0, otherwise, code as 0
+
+anes2016 <- mutate(anes2016, 
+         contribution = ifelse(party_contribution_post == 1,
+                          0,
+                          1))
+
+view(anes2016)
+
+```
+8. Provide descriptive summaries for each variable.
+
+``` {r}
+#datasummary did not work, it says that "EXPR must be a length 1 vector" so I will use summary for each variable
+datasummary_skim(data=anes2016, "numeric")
+#Using summary for statistic (credit to Jess and Jessie for the help circumventing the previous error)
+summary(anes2016$age)
+summary(anes2016$gender)
+summary(anes2016$race)
+summary(anes2016$homeowner)
+summary(anes2016$contribution)
+#CI 
+group.CI(contribution ~ 1, data = anes2016)
+#Grouped by gender (From lecture)
+groupCI_anes <- group.CI(contribution ~ gender, data = anes2016)
+# check correlation
+cor(anes2016$homeowner, anes2016$contribution)
+
+```
+9. Run an appropriate regression analysis and insert the table into the R Markdown document.
+```{r}
+#Logit code from UCLA stats page (which is awesome by the way and I need to remember this resource)
+mylogit <- glm(contribution ~ homeowner + age + gender + race, data = anes2016, family = "binomial")
+
+summary(mylogit)
+
+```
+
+10. Create a coefficient plot based on the above table.
+
+```{r}
+#Stargazer to make a legit regression table 
+logit_table <- stargazer(mylogit, type = "text",
+          # you can customize the labels
+          title            = "Effect of Homeownership on Party Contributions",
+          covariate.labels = c("Homeownership", "Age", "Gender", "Race"),
+          dep.var.labels   = "Party Contribution")
+
+print(logit_table)
+```
+# Your project
+
+Now it's your turn. Use the tools you used today to conduct data analysis for one of your final seminar papers.
+
+1. Create a descriptive statistics summary table for your main variables of interest. Note the number of observations.
+
+2. If you are planning to run a regression, please write out the regression formula. Please take into consideration the dependent variable and its distribution. If you already have the data, you may go ahead and run it. If you do not have the data and is in the process of collecting it, write out the formula. Pre-analysis plans are becoming more common in the discipline, so being able to record what you *plan* to do is becoming increasingly more important.
+
+If I were to run a regression on voter turnout and the Flint water crisis, I could use the pre-water crisis as a control, and the post-water crisis environment as the treatment. I could code the voter turnout as a binary variable (0-pre 2014, 1-post 2014). The outcome variable would be voter turnout in municipal elections. A potential covariate would be another binary variable of whether a census tract had occurrences of lead over the lead threshold (>5ppb), or not. I think I would have to use a multiple linear regression, as the dependent variable is continuous. The formula may (?) look like this: 
+
+multinom(voter turnout ~ water crisis + lead contamination, data)
+
+# Submit
+
+Email me (mshieh2@wisc.edu) the link to your `ps811-exercises` repository when you are done.
