@@ -1,0 +1,188 @@
+---
+title: 'Exercise 10: Data Manipulation with Replication Example'
+author: "Marcy Shieh"
+date: "11/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Extend the dataset
+
+```{r}
+#install/load packages 
+library("magrittr")
+library("tidyverse")
+library("haven")
+library("here")
+library("stargazer")
+library("modelsummary")
+library(sjlabelled)
+```
+
+```{r}
+here()
+#bork data
+bork <- read_dta("Bork.dta")
+view(bork)
+
+#congress data
+congress111 <- read_dta("sen111kh.dta")
+view(congress111)
+
+#poole
+poole <- read_dta("Weekly_DW-NOMINATE_31_9.DTA")
+view(poole)
+
+#trim whitespace 
+poole$name <- trimws(poole$name)
+
+# rename congress so they conform for merging
+poole <- rename(poole, congress = cong)
+
+view(poole)
+
+#extend to sotomayor
+
+#V262 is the sotomayor column, select this column and remove president
+congress111_soto <- congress111 %>%
+  select(cong:name, V262) %>%
+  filter(name != "OBAMA")
+
+# look at the breakdown
+table(congress111_soto$V262)
+#recode 6 to 0 and 0 to NA 
+congress111_soto <- congress111_soto %>%
+  mutate(
+    vote = ifelse(V262 == 6,
+                  0,
+          ifelse(V262 == 0,
+                 NA,
+                 V262)
+  ))
+
+table(congress111_soto$V262)
+
+#check names for merging
+names(congress111_soto)
+names(bork)
+#Need to change congress111_soto to conform with bork
+congress111_soto <- rename(congress111_soto, congress = cong)
+#check to make sure 
+view(congress111_soto)
+#select pertinent variable 
+sotomayor <- congress111_soto %>%
+  select(congress, id, state, name, vote)
+
+view(sotomayor)
+
+#select the pertinent variables in poole
+poole_select <- poole %>%
+  select(congress, idno, statenm, name, dwnom1, party)
+
+# merge sotomayor votes with the senators' common space scores
+soto_poole <- left_join(sotomayor, poole_select, by=c("id" = "idno", "congress", "name"))
+#check names
+names(soto_poole)
+#rename 
+soto_poole <- rename(soto_poole, dwnom1 = cs1)
+
+#make a dataframe with: nominee, presprty, sameprty, strngprs, nomid, 
+#regime_dummy, lackqual, csnom, eucldist, interaction
+soto_poole$nominee <- rep("SOTOMAYOR") # name of nominee
+alito_poole$presprty <- rep(1) # president held party majority in Senate
+
+#if senator is in the same party as the president, 100 for Dems 
+soto_poole %>%
+  mutate(sameprty = ifelse(party == 100,
+                           1,
+                           0))
+
+soto_poole$nomid <- rep(0.780) # ideology score of the judicial nominee: https://en.wikipedia.org/wiki/Segal%E2%80%93Cover_score
+soto_poole$regime_dummy <- rep(1) 
+#pre- or post-bork (1 is post-bork, 0 is pre-bork)
+soto_poole$lackqual <- rep(1-0.810) 
+#subtract newspaper score by 1 to get their "lack of qualifications" score #https://en.wikipedia.org/wiki/Segal%E2%80%93Cover_score
+
+#save for later 
+soto_poole$csnom <- NA 
+#this is going to be the Segal-Cover score for each nominee "transformed" as the Common Space/Poole & Rosenthal/DW-Nominate (it goes by many names) score
+
+soto_poole$eucldist <- NA 
+#Euclidean distance between the senator and the nominee
+
+soto_poole$interaction <- NA 
+#interaction of ideological distance and qualifications
+
+soto_bork_poole <- full_join(bork, soto_poole)
+names(soto_bork_poole)
+
+
+#from reading the article, you know that you need the common space scores for each president as well
+# the president is coded with a congressional district (cd) number of 0, and a state number (state) of 99
+poole_filter <- poole %>%
+  filter(cd == 0 & state == 99) %>%
+  select(congress, name, dwnom1)
+
+#rename name
+poole_filter <- rename(poole_filter, pres = name)
+
+#rename dwnom1
+poole_filter <- rename(poole_filter, cspres = dwnom1)
+
+#join together the cspres scores
+soto_bork_poole_full <- full_join(soto_bork_poole, poole_filter)
+
+
+soto_poole_coefficients <- lm(cspres ~ nomid, data = soto_bork_poole_full)
+soto_poole_coefficients$coefficients
+
+#scale the common space scores for alito
+soto_bork_poole_full$csnom_soto <- 0.5669997 - 0.9788148 *soto_bork_poole_full$nomid
+
+#calculate for ideological distance
+soto_bork_poole_full$eucldist_soto <- (soto_bork_poole_full$csnom_soto - soto_bork_poole_full$cs1)^2
+
+#calculate the interaction between ideological distance and qualifications
+soto_bork_poole_full$interaction_soto <- soto_bork_poole_full$eucldist_soto*soto_poole$lackqual
+
+view(soto_bork_poole_full)
+
+```
+Extend the exercise we did in class up to the Senate confirmation of Associate Justice Sonia Sotomayor, following the instructions in the `lecture-10.R` file.
+
+Links to the datasets required to complete this exercise:
+
+- Harvard Dataverse entry for the Epstein et al. (2006) article (includes PDF of article for reference): https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/W5CV8E&version=1.0
+
+- Poole & Rosenthal scores from 2016: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/W5CV8E&version=1.0
+
+- 111th Congress roll call votes and dictionary: https://legacy.voteview.com/senate111.htm
+
+- Segal-Cover scores: https://en.wikipedia.org/wiki/Segal%E2%80%93Cover_score
+
+# Replication
+
+Find replication materials for a paper and replicate a table within the paper.
+
+    - There are many political science papers with data stored in the Stata (`.dta`) file  format accompanied by a Stata file (`.do`) file. In those cases, you will need to read the Stata file into R using the `haven` package and recreate your table of choice using R code. In other words, please do not turn in Stata code!
+    
+    - If you do find replication materials in R and would like to run the entire R script, please feel free to do so! Reviewing other people's replication materials is the best way to learn how scholars assemble their results.
+
+Here are some great resources for finding articles with reproducible data.
+
+- Political Science Replication (https://politicalsciencereplication.wordpress.com/)
+
+- Harvard Dataverse (https://dataverse.harvard.edu/dataverse/harvard?q=&fq0=subject_ss%3A%22Social%20Sciences%22&types=dataverses%3Adatasets&sort=dateSort&order=desc)
+
+- Recent articles from *Political Science Research and Methods*, *American Journal of Political Science*, *American Political Science Review*, and *Political Analysis*
+
+    - You can access articles in the top journals by signing into the UW-Madison Library website (https://library.wisc.edu) with your UW netID
+
+
+
+# Submit
+
+Email me (mshieh2@wisc.edu) the link to your `ps811-exercises` repository when you are done.
